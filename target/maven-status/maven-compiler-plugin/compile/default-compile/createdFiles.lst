@@ -1,0 +1,4 @@
+com\example\clinic\entity\Doctor.class
+com\example\clinic\repository\AppointmentRepository.class
+com\example\clinic\repository\DoctorRepository.class
+com\example\clinic\repository\MedicalRecordRepository.class

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Data Pasien</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            background:#f8fafc;
+            font-family:'Poppins',sans-serif;
+        }
+
+        .page-header{
+            background:linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #1d4ed8
+            );
+            color:white;
+            padding:30px;
+            border-radius:25px;
+            margin-bottom:25px;
+            box-shadow:0 15px 30px rgba(37,99,235,.25);
+        }
+
+        .page-header h1{
+            font-weight:700;
+            margin-bottom:10px;
+        }
+
+        .stats-card{
+            border:none;
+            border-radius:20px;
+            background:white;
+            box-shadow:0 10px 25px rgba(0,0,0,.08);
+            margin-bottom:25px;
+        }
+
+        .stats-number{
+            font-size:35px;
+            font-weight:700;
+            color:#2563eb;
+        }
+
+        .search-box{
+            background:white;
+            border:none;
+            border-radius:20px;
+            padding:25px;
+            margin-bottom:25px;
+            box-shadow:0 10px 25px rgba(0,0,0,.08);
+        }
+
+        .card-custom{
+            border:none;
+            border-radius:25px;
+            overflow:hidden;
+            box-shadow:0 10px 25px rgba(0,0,0,.08);
+        }
+
+        .table{
+            margin-bottom:0;
+        }
+
+        .table thead{
+            background:#1e293b;
+            color:white;
+        }
+
+        .table tbody tr{
+            transition:.3s;
+        }
+
+        .table tbody tr:hover{
+            background:#f8fafc;
+            transform:scale(1.005);
+        }
+
+        .patient-avatar{
+            width:45px;
+            height:45px;
+            border-radius:50%;
+            background:#2563eb;
+            color:white;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:700;
+            margin-right:12px;
+        }
+
+        .badge-male{
+            background:#dbeafe;
+            color:#1d4ed8;
+            padding:8px 15px;
+            border-radius:20px;
+            font-size:13px;
+            font-weight:600;
+        }
+
+        .badge-female{
+            background:#fce7f3;
+            color:#be185d;
+            padding:8px 15px;
+            border-radius:20px;
+            font-size:13px;
+            font-weight:600;
+        }
+
+        .btn{
+            border-radius:12px;
+            font-weight:500;
+            transition:.3s;
+        }
+
+        .btn:hover{
+            transform:translateY(-2px);
+        }
+
+        .form-control{
+            border-radius:12px;
+            height:50px;
+        }
+
+        .fade-card{
+            animation:fadeIn .4s ease;
+        }
+
+        @keyframes fadeIn{
+
+            from{
+                opacity:0;
+                transform:translateY(10px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container py-4 fade-card">
+
+    <div class="page-header">
+
+        <h1>
+
+            <i class="fas fa-user-injured"></i>
+
+            Data Pasien
+
+        </h1>
+
+        <p class="mb-0">
+
+            Kelola seluruh data pasien klinik
+
+        </p>
+
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+
+            <div class="stats-card">
+
+                <div class="card-body text-center">
+
+                    <h6>Total Pasien</h6>
+
+                    <div class="stats-number"
+                         th:text="${#lists.size(patients)}">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="d-flex gap-2 mb-4">
+
+        <a href="/"
+           class="btn btn-dark">
+
+            <i class="fas fa-house"></i>
+            Dashboard
+
+        </a>
+
+        <a href="/patients/add"
+           class="btn btn-success">
+
+            <i class="fas fa-plus"></i>
+            Tambah Pasien
+
+        </a>
+
+    </div>
+
+    <div class="search-box">
+
+        <form method="get"
+              action="/patients">
+
+            <div class="row g-3">
+
+                <div class="col-md-10">
+
+                    <input type="text"
+                           name="keyword"
+                           class="form-control"
+                           placeholder="Cari nama pasien..."
+                           th:value="${keyword}">
+
+                </div>
+
+                <div class="col-md-2">
+
+                    <button class="btn btn-primary w-100 h-100">
+
+                        <i class="fas fa-search"></i>
+
+                        Cari
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+        <div class="mt-3">
+
+            <a href="/patients"
+               class="btn btn-secondary btn-sm">
+
+                <i class="fas fa-rotate-left"></i>
+                Reset
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="card card-custom">
+
+        <div class="card-body p-0">
+
+            <table class="table align-middle">
+
+                <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Pasien</th>
+                    <th>Gender</th>
+                    <th>No HP</th>
+                    <th>Aksi</th>
+
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                <tr th:each="patient : ${patients}">
+
+                    <td>
+
+                        <strong th:text="${patient.id}"></strong>
+
+                    </td>
+
+                    <td>
+
+                        <div class="d-flex align-items-center">
+
+                            <div class="patient-avatar">
+
+                                <span th:text="${#strings.substring(patient.fullName,0,1)}">
+                                    A
+                                </span>
+
+                            </div>
+
+                            <strong th:text="${patient.fullName}"></strong>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        <span
+                                th:if="${patient.gender == 'Laki-laki'}"
+                                class="badge-male">
+
+                            Laki-laki
+
+                        </span>
+
+                        <span
+                                th:if="${patient.gender == 'Perempuan'}"
+                                class="badge-female">
+
+                            Perempuan
+
+                        </span>
+
+                    </td>
+
+                    <td th:text="${patient.phone}"></td>
+
+                    <td>
+
+                        <a th:href="@{/patients/edit/{id}(id=${patient.id})}"
+                           class="btn btn-outline-warning btn-sm">
+
+                            <i class="fas fa-pen"></i>
+
+                        </a>
+
+                        <a th:href="@{/patients/delete/{id}(id=${patient.id})}"
+                           class="btn btn-outline-danger btn-sm"
+                           onclick="return confirm('Yakin ingin menghapus data pasien?')">
+
+                            <i class="fas fa-trash"></i>
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(patients)}">
+
+                    <td colspan="5"
+                        class="text-center text-danger p-4">
+
+                        <i class="fas fa-circle-exclamation"></i>
+
+                        Data pasien tidak ditemukan
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
